@@ -1,28 +1,39 @@
 
 
-blanks_l=zeros(726,1);
-blanks_t=zeros(726,1);
-zero_l=zeros(726,1);
-ncols=zeros(726,1);
-nrows=zeros(726,1);
+Nimages = 100;
 
-ncolbin=zeros(726,1);
-nrowbin=zeros(726,1);
+imagetoskip = [4,9];
 
+blanks_l=zeros(Nimages,1);
+blanks_t=zeros(Nimages,1);
+zero_l=zeros(Nimages,1);
+ncols=zeros(Nimages,1);
+nrows=zeros(Nimages,1);
 
-p_offsets=zeros(726,1);
-p_scales =zeros(726,1);
-p_std    =zeros(726,1);
-
+ncolbin=zeros(Nimages,1);
+nrowbin=zeros(Nimages,1);
 
 
-[image,header] = readimgpath('D:/MATS/2019-02-01 param1/', 0, 0);
+p_offsets=zeros(Nimages,1);
+p_scales =zeros(Nimages,1);
+p_std    =zeros(Nimages,1);
+
+
+
+[image,header] = readimgpath('H:/Workspace/MATS/FFT/2019-02-05 rand2/', 0, 0);
 
 ref_image=image;
 
-for jj=1:726
-     jj
-    [image,header] = readimgpath('D:/MATS/2019-02-01 param1/', jj, 0);
+for jj=1:Nimages
+    if ismember(jj, imagetoskip)
+        continue
+    end
+    try
+        [image,header] = readimgpath('H:/Workspace/MATS/FFT/2019-02-05 rand2/', jj, 0);
+    catch error_data
+        fprintf('Image %d cannot be read\n', jj);
+    end
+            
     blanks_l(jj)=header.BlankLeadingValue;
     blanks_t(jj)=header.BlankTrailingValue;
     ncols(jj)=header.NCol;
@@ -33,12 +44,18 @@ for jj=1:726
     
     zero_l(jj)=header.ZeroLevel;
     
-    prim=predict_image(ref_image, header);
+    try
+        prim=predict_image(ref_image, header);
+        
+        [t_off, t_scl, t_std] = compare_image(prim, image);
+        
+        p_offsets(jj)=t_off;
+        p_scales(jj) =t_scl;
+        p_std(jj)    =t_std;
+    catch error_data
+       fprintf('Image prediction did not work for image %d\n', jj);
+    end
     
-    [t_off, t_scl, t_std] = compare_image(prim, image);
     
-    p_offsets(jj)=t_off;
-    p_scales(jj) =t_scl;
-    p_std(jj)    =t_std;
     
 end
