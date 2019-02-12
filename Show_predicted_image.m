@@ -1,7 +1,9 @@
 
-[ref_image,ref_header] = readimgpath('H:/Workspace/MATS/FFT/2019-02-08 rand6/', 0, 0);
+[ref_hsm_image,ref_header] = readimgpath('H:/Workspace/MATS/FFT/2019-02-08 rand6/', 0, 0);
 
-[image,header] = readimgpath('H:/Workspace/MATS/FFT/2019-02-08 rand6/', 5, 0);
+[ref_lsm_image,ref_header] = readimgpath('H:/Workspace/MATS/FFT/2019-02-08 rand6/', 4, 0);
+
+[image,header] = readimgpath('H:/Workspace/MATS/FFT/2019-02-12 bin/', 128, 0);
 
 image_display_adjustment = 200;
     
@@ -17,15 +19,14 @@ title('CCD image')
 xlabel('Pixels')
 ylabel('Pixels')
 
-if (header.BlankLeadingValue>400)
-    header.BlankLeadingValue = 270;
-    disp("Leading blank value is wrong");
-end
-
 if header.Ending == 'Wrong size'
     disp("Something wrong with the image");
 else
-    prim=predict_image(ref_image, header);
+    if bitand(header.Gain,4096) 
+        prim=predict_image(ref_lsm_image, header);
+    else
+        prim=predict_image(ref_hsm_image, header);
+    end
 
     figure(2)
     colormap jet
@@ -35,7 +36,7 @@ else
     mean_img = mean(mean(prim));
     caxis([mean_img-image_display_adjustment,mean_img+image_display_adjustment])
     colorbar();
-    title('CCD image')
+    title('Generated from reference')
     xlabel('Pixels')
     ylabel('Pixels')
 end
