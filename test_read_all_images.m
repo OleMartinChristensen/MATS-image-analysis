@@ -2,7 +2,7 @@
 
 Nimages = 100;
 
-imagetoskip = [4,9];
+imagetoskip = [0];
 
 blanks_l=zeros(Nimages,1);
 blanks_t=zeros(Nimages,1);
@@ -43,6 +43,10 @@ for jj=1:Nimages
     nrowbin(jj)=header.NColBinCCD;
     
     zero_l(jj)=header.ZeroLevel;
+    
+    if (header.Ending == 'Wrong size') | (header.BlankLeadingValue == 0)
+        continue
+    end
     
     try
         prim=predict_image(ref_image, header);
