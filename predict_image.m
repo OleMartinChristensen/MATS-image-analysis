@@ -45,7 +45,7 @@ image(:,:)=128;                         % offset
 for j_r=1:nrow
     for j_br=1:nrowbin                 % account for row binning on CCD
         for j_c=1:ncol
-            image(j_r,j_c)=image(j_r,j_c) + blank_off;  % here we add the blank value
+            image(j_r,j_c)=image(j_r,j_c) + ncolbinF*blank_off;  % Here we add the blank value
             for j_bc=1:ncolbintotal        % account for column binning
                 if ismember((j_c-1)*ncolbinC*ncolbinF + j_bc + ncolskip, bad_columns + 1)% Why + 1?
                     continue
