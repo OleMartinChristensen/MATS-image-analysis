@@ -15,7 +15,6 @@ ncolskip=header.NColSkip;
 nrowbin=header.NRowBinCCD;
 ncolbinC=header.NColBinCCD;
 ncolbinF=2^header.NColBinFPGA;
-ncolbintotal=ncolbinC*ncolbinF;
 
 blank=header.BlankLeadingValue + 10
 blank_off=blank-128;
@@ -37,6 +36,7 @@ if ncolbinF==0 % no binning means beaning of one.
     ncolbinF=1;
 end;
 
+ncolbintotal=ncolbinC*ncolbinF;
 
 image=zeros(nrow, ncol);
 
