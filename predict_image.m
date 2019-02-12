@@ -22,6 +22,8 @@ zerolevel=header.ZeroLevel;
 
 gain=2^bitand(header.Gain,255);
 
+bad_columns=header.BadCol;
+
 if nrowbin==0 % no binning means beaning of one.
     nrowbin=1;
 end;
@@ -45,14 +47,18 @@ for j_r=1:nrow
             for j_bcf=1:ncolbinF        % account for column binning in FPGA
                 image(j_r,j_c)=image(j_r,j_c) + blank_off;  % here we add the blank
                 for j_bcc=1:ncolbinC    % account for column binning on CCD
-                    try
-                        % Add only the actual signal from every pixel (minus blank)
-                        image(j_r,j_c)=image(j_r,j_c) - blank + ...
-                            reference_image((j_r-1)*nrowbin+j_br+nrowskip, ...
-                            (j_c-1)*ncolbinC*ncolbinF + ...
-                            (j_bcf-1)*ncolbinF + j_bcc + ncolskip);
-                    catch
-                        image(j_r,j_c)=blank;
+                    if ismember((j_c-1)*ncolbinC*ncolbinF + (j_bcf-1)*ncolbinF + j_bcc + ncolskip, bad_columns)
+                        continue
+                    else
+                        try
+                            % Add only the actual signal from every pixel (minus blank)
+                            image(j_r,j_c)=image(j_r,j_c) - blank + ...
+                                reference_image((j_r-1)*nrowbin+j_br+nrowskip, ...
+                                (j_c-1)*ncolbinC*ncolbinF + ...
+                                (j_bcf-1)*ncolbinF + j_bcc + ncolskip);
+                        catch
+                            image(j_r,j_c)=blank;
+                        end
                     end
                 end;
             end;

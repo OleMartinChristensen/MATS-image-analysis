@@ -63,12 +63,12 @@ else
     BadCol = 0;
     Ending = bin2dec(trailer_bin(end,:));
     
-%     if NBadCol>0
-%         BadCol = zeros(1,NBadCol);
-%         for k_bc = 1:NBadCol
-%             BadCol(k_bc) =  bin2dec(trailer_bin(9+k_bc,:));
-%         end
-%     end
+    if NBadCol>0
+        BadCol = zeros(1,NBadCol);
+        for k_bc = 1:NBadCol
+            BadCol(k_bc) =  bin2dec(trailer_bin(9+k_bc,:));
+        end
+    end
 end
 header = struct(...
     'Frame_count', Frame_count,...
