@@ -14,11 +14,11 @@ ncolskip=header.NColSkip;
 
 nrowbin=header.NRowBinCCD;
 ncolbinC=header.NColBinCCD;
-ncolbinF=header.NColBinFPGA;
-
-blank=header.BlankLeadingValue;
+ncolbinF=2^header.NColBinFPGA;
 
 blank_off=blank-128;
+blank=header.BlankLeadingValue + 10;
+zerolevel=header.ZeroLevel;
 
 if nrowbin==0 % no binning means beaning of one.
     nrowbin=1;
@@ -41,12 +41,16 @@ for j_r=1:nrow
     for j_br=1:nrowbin                 % account for row binning on CCD
         for j_c=1:ncol
             for j_bcf=1:ncolbinF        % account for column binning in FPGA
-                image(j_r,j_c)=image(j_r,j_c) + blank_off;  % here we add the blank 
+                image(j_r,j_c)=image(j_r,j_c) + blank_off;  % here we add the blank
                 for j_bcc=1:ncolbinC    % account for column binning on CCD
-                    image(j_r,j_c)=image(j_r,j_c) + ...
-                        reference_image((j_r-1)*nrowbin+j_br+nrowskip, ...
-                        (j_c-1)*ncolbinC*ncolbinF + ...
-                        (j_bcf-1)*ncolbinF + j_bcc + ncolskip);  
+                    try
+                        image(j_r,j_c)=image(j_r,j_c) - blank + ...
+                            reference_image((j_r-1)*nrowbin+j_br+nrowskip, ...
+                            (j_c-1)*ncolbinC*ncolbinF + ...
+                            (j_bcf-1)*ncolbinF + j_bcc + ncolskip);
+                    catch
+                        image(j_r,j_c)=blank;
+                    end
                 end;
             end;
         end;
