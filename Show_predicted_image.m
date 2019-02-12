@@ -15,16 +15,20 @@ title('CCD image')
 xlabel('Pixels')
 ylabel('Pixels')
 
-prim=predict_image(ref_image, header);
+if header.Ending == 'Wrong size'
+    disp("Something wrong with the image");
+else
+    prim=predict_image(ref_image, header);
 
-figure(2)
-colormap jet
-hold off
-subplot(1,1,1)
-imagesc(prim)
-mean_img = mean(mean(prim));
-caxis([mean_img-100,mean_img+100])
-colorbar();
-title('CCD image')
-xlabel('Pixels')
-ylabel('Pixels')
+    figure(2)
+    colormap jet
+    hold off
+    subplot(1,1,1)
+    imagesc(prim)
+    mean_img = mean(mean(prim));
+    caxis([mean_img-100,mean_img+100])
+    colorbar();
+    title('CCD image')
+    xlabel('Pixels')
+    ylabel('Pixels')
+end

@@ -16,9 +16,11 @@ nrowbin=header.NRowBinCCD;
 ncolbinC=header.NColBinCCD;
 ncolbinF=2^header.NColBinFPGA;
 
+blank=header.BlankLeadingValue + 10
 blank_off=blank-128;
-blank=header.BlankLeadingValue + 10;
 zerolevel=header.ZeroLevel;
+
+gain=2^bitand(header.Gain,255);
 
 if nrowbin==0 % no binning means beaning of one.
     nrowbin=1;
@@ -44,6 +46,7 @@ for j_r=1:nrow
                 image(j_r,j_c)=image(j_r,j_c) + blank_off;  % here we add the blank
                 for j_bcc=1:ncolbinC    % account for column binning on CCD
                     try
+                        % Add only the actual signal from every pixel (minus blank)
                         image(j_r,j_c)=image(j_r,j_c) - blank + ...
                             reference_image((j_r-1)*nrowbin+j_br+nrowskip, ...
                             (j_c-1)*ncolbinC*ncolbinF + ...
@@ -56,5 +59,7 @@ for j_r=1:nrow
         end;
     end;
 end;
+
+image = image/gain;
 
 end
