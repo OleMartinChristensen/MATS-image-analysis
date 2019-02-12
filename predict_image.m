@@ -15,6 +15,7 @@ ncolskip=header.NColSkip;
 nrowbin=header.NRowBinCCD;
 ncolbinC=header.NColBinCCD;
 ncolbinF=2^header.NColBinFPGA;
+ncolbintotal=ncolbinC*ncolbinF;
 
 blank=header.BlankLeadingValue + 10
 blank_off=blank-128;
@@ -44,23 +45,20 @@ image(:,:)=128;                         % offset
 for j_r=1:nrow
     for j_br=1:nrowbin                 % account for row binning on CCD
         for j_c=1:ncol
-            for j_bcf=1:ncolbinF        % account for column binning in FPGA
-                image(j_r,j_c)=image(j_r,j_c) + blank_off;  % here we add the blank
-                for j_bcc=1:ncolbinC    % account for column binning on CCD
-                    if ismember((j_c-1)*ncolbinC*ncolbinF + (j_bcf-1)*ncolbinF + j_bcc + ncolskip, bad_columns)
-                        continue
-                    else
-                        try
-                            % Add only the actual signal from every pixel (minus blank)
-                            image(j_r,j_c)=image(j_r,j_c) - blank + ...
-                                reference_image((j_r-1)*nrowbin+j_br+nrowskip, ...
-                                (j_c-1)*ncolbinC*ncolbinF + ...
-                                (j_bcf-1)*ncolbinF + j_bcc + ncolskip);
-                        catch
-                            image(j_r,j_c)=blank;
-                        end
+            image(j_r,j_c)=image(j_r,j_c) + blank_off;  % here we add the blank value
+            for j_bc=1:ncolbintotal        % account for column binning
+                if ismember((j_c-1)*ncolbinC*ncolbinF + j_bc + ncolskip, bad_columns + 1)% Why + 1?
+                    continue
+                else
+                    try
+                        % Add only the actual signal from every pixel (minus blank)
+                        image(j_r,j_c)=image(j_r,j_c) - blank + ...
+                            reference_image((j_r-1)*nrowbin+j_br+nrowskip, ...
+                            (j_c-1)*ncolbinC*ncolbinF + j_bc + ncolskip);
+                    catch
+                        image(j_r,j_c)=blank;
                     end
-                end;
+                end
             end;
         end;
     end;
