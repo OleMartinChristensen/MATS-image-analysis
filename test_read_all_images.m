@@ -20,16 +20,16 @@ p_std    =zeros(Nimages,1);
 
 
 
-[image,header] = readimgpath('H:/Workspace/MATS/FFT/2019-02-05 rand2/', 0, 0);
+[ref_hsm_image,ref_header] = readimgpath('H:/Workspace/MATS/FFT/2019-02-08 rand6/', 0, 0);
 
-ref_image=image;
+[ref_lsm_image,ref_header] = readimgpath('H:/Workspace/MATS/FFT/2019-02-08 rand6/', 4, 0);
 
 for jj=1:Nimages
     if ismember(jj, imagetoskip)
         continue
     end
     try
-        [image,header] = readimgpath('H:/Workspace/MATS/FFT/2019-02-05 rand2/', jj, 0);
+        [image,header] = readimgpath('H:/Workspace/MATS/FFT/2019-02-08 rand6/', jj, 0);
     catch error_data
         fprintf('Image %d cannot be read\n', jj);
     end
@@ -49,7 +49,7 @@ for jj=1:Nimages
     end
     
     try
-        prim=predict_image(ref_image, header);
+        prim=predict_image(ref_hsm_image ,ref_lsm_image, header);
         
         [t_off, t_scl, t_std] = compare_image(prim, image);
         
