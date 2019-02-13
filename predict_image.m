@@ -38,7 +38,7 @@ end;
 
 ncolbintotal=ncolbinC*ncolbinF;
 
-if header.SignalMode == 1
+if header.SignalMode > 0
     reference_image = lsm_image;
 end
 
@@ -51,9 +51,11 @@ finished_col = 0;
 for j_r=1:nrow
     for j_br=1:nrowbin                 % account for row binning on CCD
         for j_c=1:ncol
-            image(j_r,j_c)=image(j_r,j_c) + ncolbinF*blank_off;  % Here we add the blank value
+            if j_br==1
+                image(j_r,j_c)=image(j_r,j_c) + ncolbinF*blank_off;  % Here we add the blank value, only once per binned row
+            end
             for j_bc=1:ncolbintotal        % account for column binning
-                if ismember((j_c-1)*ncolbinC*ncolbinF + j_bc + ncolskip, bad_columns + 1)% +1 because Ncol is +1
+                if ismember((j_c-1)*ncolbinC*ncolbinF + j_bc + ncolskip, bad_columns+1)% +1 because Ncol is +1
                     continue
                 else
                     try
@@ -65,10 +67,10 @@ for j_r=1:nrow
                         % Out of reference image range
                         if (j_r-1)*nrowbin+j_br+nrowskip > 511
                             finished_row = 1;
-                            image(j_r+1:nrow,j_c:ncol) = blank; 
+                            image(j_r+1:nrow,1:ncol) = image(j_r+1:nrow,1:ncol) + ncolbinF*blank_off; 
                         elseif (j_c-1)*ncolbinC*ncolbinF + j_bc + ncolskip> 2048
                             finished_col = 1;
-                            image(j_r,j_c+1:ncol) = blank; 
+                            image(j_r,j_c+1:ncol) = image(j_r,j_c+1:ncol) + ncolbinF*blank_off; 
                         end
                         break
                     end
