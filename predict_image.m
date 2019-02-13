@@ -60,9 +60,10 @@ for j_r=1:nrow
                 else
                     try
                         % Add only the actual signal from every pixel (minus blank)
-                        image(j_r,j_c)=image(j_r,j_c) - blank + ...
-                            reference_image((j_r-1)*nrowbin+j_br+nrowskip, ...
-                            (j_c-1)*ncolbinC*ncolbinF + j_bc + ncolskip);
+                        image(j_r,j_c)=image(j_r,j_c) - blank + ...                     % remove blank
+                            reference_image((j_r-1)*nrowbin+j_br+nrowskip, ...          % row value calculation
+                            (j_c-1)*ncolbinC*ncolbinF + j_bc + ncolskip) * ...          % column value calculation
+                            0.99^ncolbinC;                                              % scaling factor
                     catch
                         % Out of reference image range
                         if (j_r-1)*nrowbin+j_br+nrowskip > 511
