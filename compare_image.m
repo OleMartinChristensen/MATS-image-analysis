@@ -1,4 +1,4 @@
-function [t_off, t_scl, t_std] = compare_image(image1, image2);
+function [t_off, t_scl, t_std] = compare_image(image1, image2, header);
 
 %
 % this is a function to compare two images of
@@ -17,6 +17,24 @@ end
 
 nrow=sz1(1);
 ncol=sz1(2);
+
+nrowskip=header.NRowSkip;
+ncolskip=header.NColSkip;
+
+nrowbin=header.NRowBinCCD;
+ncolbinC=header.NColBinCCD;
+ncolbinF=2^header.NColBinFPGA;
+
+if nrowskip + nrowbin*nrow > 511
+    nrow = floor((511-nrowskip)/nrowbin);
+end
+
+if ncolskip + ncolbinC*ncolbinF*ncol > 2047
+    nrow = floor((2047-ncolskip)/(ncolbinC*ncolbinF));
+end
+
+image1 = image1(1:nrow,1:ncol);
+image2 = image2(1:nrow,1:ncol);
 
 for jj=1:nrow
     x=[ones(ncol,1), image1(jj,:)'];
@@ -92,7 +110,7 @@ end;
 % figure(16)
 % plot(c_std);
 
-nsz=sz1(1)*sz1(2);
+nsz=nrow*ncol;
 la_1=reshape(image1,[nsz,1]);
 la_2=reshape(image2,[nsz,1]);
 

@@ -51,7 +51,7 @@ for jj=1:Nimages
     try
         prim=predict_image(ref_hsm_image ,ref_lsm_image, header);
         
-        [t_off, t_scl, t_std] = compare_image(prim, image);
+        [t_off, t_scl, t_std] = compare_image(prim, image, header);
         
         p_offsets(jj)=t_off;
         p_scales(jj) =t_scl;
