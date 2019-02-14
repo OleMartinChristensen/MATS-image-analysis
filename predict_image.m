@@ -85,11 +85,11 @@ for j_r=1:nrow
                     end
                 end
             end;
-            if finished_row | finished_col
+            if finished_row
                 break
             end
         end;
-        if finished_row
+        if finished_col
             break
         end
     end;

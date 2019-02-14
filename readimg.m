@@ -57,7 +57,7 @@ else
     Version = bin2dec(trailer_bin(7,:));
     VersionDate = bin2dec(trailer_bin(8,:));
     NBadCol = bin2dec(trailer_bin(9,:));
-    BadCol = 0;
+    BadCol = [];
     Ending = bin2dec(trailer_bin(end,:));
     
     if NBadCol>0
