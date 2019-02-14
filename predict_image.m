@@ -16,7 +16,15 @@ nrowbin=header.NRowBinCCD;
 ncolbinC=header.NColBinCCD;
 ncolbinF=2^header.NColBinFPGA;
 
-blank=header.BlankLeadingValue + 10
+% If trailing blanks are correct:
+blank=header.BlankTrailingValue;
+% Else
+% if header.SignalMode > 0
+%     blank=header.BlankLeadingValue + 16;
+% else
+%     blank=header.BlankLeadingValue + 8;
+% end
+
 blank_off=blank-128;
 zerolevel=header.ZeroLevel;
 
@@ -49,13 +57,13 @@ image(:,:)=128;                         % offset
 finished_row = 0;
 finished_col = 0;
 for j_r=1:nrow
-    for j_br=1:nrowbin                 % account for row binning on CCD
-        for j_c=1:ncol
+    for j_c=1:ncol
+        for j_br=1:nrowbin                 % account for row binning on CCD
             if j_br==1
                 image(j_r,j_c)=image(j_r,j_c) + ncolbinF*blank_off;  % Here we add the blank value, only once per binned row
             end
             for j_bc=1:ncolbintotal        % account for column binning
-                if ismember((j_c-1)*ncolbinC*ncolbinF + j_bc + ncolskip, bad_columns+1)% +1 because Ncol is +1
+                if ncolbinC>1 && ismember((j_c-1)*ncolbinC*ncolbinF + j_bc + ncolskip, bad_columns+1)% +1 because Ncol is +1
                     continue
                 else
                     try
@@ -63,7 +71,7 @@ for j_r=1:nrow
                         image(j_r,j_c)=image(j_r,j_c) - blank + ...                     % remove blank
                             reference_image((j_r-1)*nrowbin+j_br+nrowskip, ...          % row value calculation
                             (j_c-1)*ncolbinC*ncolbinF + j_bc + ncolskip) * ...          % column value calculation
-                            0.99^ncolbinC;                                              % scaling factor
+                            1;                                              % scaling factor
                     catch
                         % Out of reference image range
                         if (j_r-1)*nrowbin+j_br+nrowskip > 511
