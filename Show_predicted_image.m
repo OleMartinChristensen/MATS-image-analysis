@@ -3,9 +3,11 @@
 
 [ref_lsm_image,ref_header] = readimgpath('H:/Workspace/MATS/FFT/2019-02-08 rand6/', 4, 0);
 
-[image,header] = readimgpath('H:/Workspace/MATS/FFT/2019-02-12 bin/', 128, 0);
+image_index = 17;
 
 image_display_adjustment = 200;
+[image,header] = readimgpath('H:/Workspace/MATS/FFT/2019-02-14 bin2/', image_index, 0);
+
     
 figure(1)
 colormap jet
@@ -29,10 +31,13 @@ else
     hold off
     subplot(1,1,1)
     imagesc(prim)
-    mean_img = mean(mean(prim));
-    caxis([mean_img-image_display_adjustment,mean_img+image_display_adjustment])
+    pred_mean_img = mean(mean(prim));
+    caxis([pred_mean_img-image_display_adjustment,pred_mean_img+image_display_adjustment])
     colorbar();
     title('Generated from reference')
     xlabel('Pixels')
     ylabel('Pixels')
 end
+
+fprintf('Image %d CCD image mean: %d, Predicted image mean: %d, Blank: %d\n', image_index, mean_img, pred_mean_img, header.BlankLeadingValue);
+fprintf('nrowbin: %d, ncolbinC: %d, ncolbinF: %d, gain: %d\n', header.NRowBinCCD, header.NColBinCCD, header.NColBinFPGA, header.Gain);
