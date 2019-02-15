@@ -66,39 +66,26 @@ for j_r=1:nrow
                 image(j_r,j_c)=image(j_r,j_c) + n_read(j_c)*blank_off;  % Here we add the blank value, only once per binned row
             end
             for j_bc=1:ncolbintotal        % account for column binning
+                
+                % Out of reference image range
+                if (j_r-1)*nrowbin + j_br + nrowskip > 511
+                    break
+                elseif (j_c-1)*ncolbinC*ncolbinF + j_bc + ncolskip> 2048
+                    break
+                end
+                
                 if ncolbinC>1 && ismember((j_c-1)*ncolbinC*ncolbinF + j_bc + ncolskip, bad_columns+1)% +1 because Ncol is +1
                     continue
                 else
-                    try
-                        % Add only the actual signal from every pixel (minus blank)
-                        image(j_r,j_c)=image(j_r,j_c) - blank + ...                     % remove blank
-                            reference_image((j_r-1)*nrowbin+j_br+nrowskip, ...          % row value calculation
-                            (j_c-1)*ncolbinC*ncolbinF + j_bc + ncolskip) * ...          % column value calculation
-                            1;                                              % scaling factor
-                    catch
-                        % Out of reference image range
-                        if (j_r-1)*nrowbin+j_br+nrowskip > 511
-                            finished_row = 1;
-                            image(j_r+1:nrow,1:ncol) = image(j_r+1:nrow,1:ncol) + ncolbinF*blank_off; 
-                        elseif (j_c-1)*ncolbinC*ncolbinF + j_bc + ncolskip> 2048
-                            finished_col = 1;
-                            image(j_r,j_c+1:ncol) = image(j_r,j_c+1:ncol) + ncolbinF*blank_off; 
-                        end
-                        break
-                    end
+                    % Add only the actual signal from every pixel (minus blank)
+                    image(j_r,j_c)=image(j_r,j_c) - blank + ...                     % remove blank
+                        reference_image((j_r-1)*nrowbin+j_br+nrowskip, ...          % row value calculation
+                        (j_c-1)*ncolbinC*ncolbinF + j_bc + ncolskip) * ...          % column value calculation
+                        1;                                              % scaling factor
                 end
             end;
-            if finished_row
-                break
-            end
         end;
-        if finished_col
-            break
-        end
     end;
-    if finished_row
-        break
-    end
 end;
 
 image = image/gain;
