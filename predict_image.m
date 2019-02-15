@@ -50,6 +50,9 @@ if header.SignalMode > 0
     reference_image = lsm_image;
 end
 
+% Bad column analysis
+[n_read, n_coadd] = binning_bc(ncol,ncolskip,ncolbinF,ncolbinC,header.BadCol);
+
 image=zeros(nrow, ncol);
 
 image(:,:)=128;                         % offset
@@ -60,7 +63,7 @@ for j_r=1:nrow
     for j_c=1:ncol
         for j_br=1:nrowbin                 % account for row binning on CCD
             if j_br==1
-                image(j_r,j_c)=image(j_r,j_c) + ncolbinF*blank_off;  % Here we add the blank value, only once per binned row
+                image(j_r,j_c)=image(j_r,j_c) + n_read(j_c)*blank_off;  % Here we add the blank value, only once per binned row
             end
             for j_bc=1:ncolbintotal        % account for column binning
                 if ncolbinC>1 && ismember((j_c-1)*ncolbinC*ncolbinF + j_bc + ncolskip, bad_columns+1)% +1 because Ncol is +1

@@ -12,30 +12,18 @@ function [n_read, n_coadd] = binning_bc(Ncol,Ncolskip,NcolbinFPGA,NcolbinCCD,Bad
 %           columns (the index of first column is 0)
 %
 
-n_read =1:Ncol+1;
-n_coadd=1:Ncol+1;
-
-if NcolbinFPGA==0 
-    NcolbinFPGA_=1;
-else
-    NcolbinFPGA_=NcolbinFPGA;
-end
-
-if NcolbinCCD==0 
-    NcolbinCCD_=1;
-else
-    NcolbinCCD_=NcolbinCCD;
-end
+n_read =1:Ncol;
+n_coadd=1:Ncol;
 
 col_index=Ncolskip;
 
 n_read(:)=0;
 n_coadd(:)=0;
 
-for j_col=1:Ncol+1 
-    for j_FPGA=1:NcolbinFPGA_
+for j_col=1:Ncol 
+    for j_FPGA=1:NcolbinFPGA
         continuous=0;
-        for j_CCD=1:NcolbinCCD_
+        for j_CCD=1:NcolbinCCD
             if ismember(col_index, BadColumns)
                 if (continuous == 1)
                     n_read(j_col)=n_read(j_col)+1;
