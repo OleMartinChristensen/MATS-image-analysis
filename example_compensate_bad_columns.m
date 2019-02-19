@@ -1,6 +1,6 @@
 
-image_index = 9;
-image_display_adjustment = 30;
+image_index =9;
+image_display_adjustment = 50;
 
 [image,header] = readimgpath('H:/Workspace/MATS/FFT/2019-02-08 rand6/', image_index, 0);
     
@@ -30,6 +30,5 @@ title('With bad columns compensated')
 xlabel('Pixels')
 ylabel('Pixels')
     
-fprintf('Image %d CCD image mean: %d, Predicted image mean: %d, Blank: %d\n', image_index, mean_img, pred_mean_img, header.BlankTrailingValue);
+fprintf('Leading Blank: %d Trailing blank: %d\n', header.BlankLeadingValue, header.BlankTrailingValue);
 fprintf('nrowbin: %d, ncolbinC: %d, ncolbinF: %d, gain: %d\n', header.NRowBinCCD, header.NColBinCCD, header.NColBinFPGA, header.Gain);
-disp(header.BlankLeadingValue)
