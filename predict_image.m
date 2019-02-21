@@ -1,4 +1,4 @@
-function [image] = predict_image(reference_image, lsm_image, header);
+function [image] = predict_image(reference_image, hsm_header, lsm_image, lsm_header, header);
 
 %
 % this is a function to predict an image read out from the CCD
@@ -16,14 +16,11 @@ nrowbin=header.NRowBinCCD;
 ncolbinC=header.NColBinCCD;
 ncolbinF=2^header.NColBinFPGA;
 
-% If trailing blanks are correct:
-blank=header.BlankTrailingValue;
-% Else
-% if header.SignalMode > 0
-%     blank=header.BlankLeadingValue + 16;
-% else
-%     blank=header.BlankLeadingValue + 8;
-% end
+if header.SignalMode > 0
+    blank=lsm_header.BlankTrailingValue;
+else
+    blank=hsm_header.BlankTrailingValue;
+end
 
 blank_off=blank-128;
 zerolevel=header.ZeroLevel;

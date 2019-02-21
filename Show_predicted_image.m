@@ -24,7 +24,7 @@ ylabel('Pixels')
 if header.Ending == 'Wrong size'
     disp("Something wrong with the image");
 else
-    prim=predict_image(ref_hsm_image, ref_lsm_image, header);
+    prim=predict_image(ref_hsm_image, hsm_header, ref_lsm_image, lsm_header, header);
 
     figure(2)
     colormap jet
