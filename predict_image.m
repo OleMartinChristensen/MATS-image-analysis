@@ -1,4 +1,4 @@
-function [image] = predict_image(reference_image, hsm_header, lsm_image, lsm_header, header);
+function [image, pred_header] = predict_image(reference_image, hsm_header, lsm_image, lsm_header, header);
 
 %
 % this is a function to predict an image read out from the CCD
@@ -86,5 +86,8 @@ for j_r=1:nrow
 end;
 
 image = image/gain;
+
+pred_header = header;
+pred_header.BlankTrailingValue = blank;
 
 end
