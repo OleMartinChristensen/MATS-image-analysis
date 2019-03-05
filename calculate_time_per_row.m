@@ -100,12 +100,4 @@ T_readout = T_row_read*(nrow+nrowskip+1) + T_row_shift*(1+ nrowbin*nrow);
 % "extra exposure time" for each of the rows.
 T_row_extra = (T_row_read + T_row_shift*nrowbin) / 1e9;
 
-% all times are displayed in seconds
-disp('Row read time: ');
-disp(T_row_read/1e9)
-disp('Total readout time: ');
-disp(T_readout/1e9)
-disp('Smearing time: ');
-disp(T_row_extra)
-
 end
