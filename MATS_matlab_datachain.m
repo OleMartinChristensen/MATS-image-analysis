@@ -25,6 +25,8 @@ image_display_adjustment = 100;
 % Make actual image out both received and predicted images
 % These can be compare if no compression is used
 recv_true_image = get_true_image (recv_image, recv_header);
+recv_true_image = desmear_true_image(recv_true_image, recv_header);
+
 pred_true_image = get_true_image (pred_image, pred_header);
 
 % Step 3
@@ -34,6 +36,7 @@ recv_comp_image = compensate_bad_columns(recv_image, recv_header);
 % Step 4
 % Getting "true image" from compensated one in MATS payload OBC
 true_comp_image = get_true_image_from_compensated(recv_comp_image, recv_header);
+true_comp_image = desmear_true_image(true_comp_image, recv_header);
 
 figure(1)
 colormap jet

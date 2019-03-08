@@ -44,7 +44,11 @@ end;
 ncolbintotal=ncolbinC*ncolbinF;
 
 if header.SignalMode > 0
-    reference_image = lsm_image;
+    reference_image = get_true_image (lsm_image, lsm_header);
+    reference_image = desmear_true_image(reference_image, lsm_header);
+else
+    reference_image = get_true_image (reference_image, hsm_header);
+    reference_image = desmear_true_image(reference_image, hsm_header);
 end
 
 % Bad column analysis
@@ -75,7 +79,7 @@ for j_r=1:nrow
                     continue
                 else
                     % Add only the actual signal from every pixel (minus blank)
-                    image(j_r,j_c)=image(j_r,j_c) - blank + ...                     % remove blank
+                    image(j_r,j_c)=image(j_r,j_c) + ...                     % remove blank
                         reference_image((j_r-1)*nrowbin+j_br+nrowskip, ...          % row value calculation
                         (j_c-1)*ncolbinC*ncolbinF + j_bc + ncolskip) * ...          % column value calculation
                         1;                                              % scaling factor
